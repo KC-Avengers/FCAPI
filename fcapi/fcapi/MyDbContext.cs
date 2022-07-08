@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using fcapi.EFModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace fcapi
@@ -19,5 +20,9 @@ namespace fcapi
         }
 
         public DbSet<Form> Form { get; set; }
+        public DbSet<FormEvent> FormEvent { get; set; }
+        public DbSet<signature> signature { get; set; }
+        public DbSet<ActingSetting> ActingSetting { get; set; }
+        public DbSet<ActingEmployeeMap> ActingEmployeeMap { get; set; }
     }
 }
