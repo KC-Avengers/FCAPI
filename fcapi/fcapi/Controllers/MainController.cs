@@ -1,8 +1,10 @@
-﻿using fcapi.EFModel;
-using Microsoft.AspNetCore.Http;
+﻿using fcapi.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 
 namespace fcapi.Controllers
 {
@@ -17,6 +19,122 @@ namespace fcapi.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        [Route("ScheduleEvent/Get/{userID}")]
+        public List<DTO_ScheduleEvent> ScheduleEvent_GetByUserID(string userID)
+        {
+            List<DTO_ScheduleEvent> dto_scheduleEvents = new List<DTO_ScheduleEvent>();
+
+            var obj = _context.ScheduleEvent.Where(item => item.UserId.ToString().Equals(userID)).ToList();
+            obj.ForEach(item =>
+            {
+                dto_scheduleEvents.Add(new DTO_ScheduleEvent
+                {
+                    id = item.id,
+                    title = item.title,
+                    start = item.start.ToString().Split(" ")[0],
+                    end = item.end.ToString().Split(" ")[0],
+                    fullDay = item.fullDay,
+                });
+            });
+            return dto_scheduleEvents;
+        }
+
+        [HttpPost]
+        [Route("ScheduleEvent/Insert")]
+        public ActionResult<string> ScheduleEvent_Insert(ScheduleEvent scheduleEvent)
+        {
+
+            try
+            {
+                _context.ScheduleEvent.Add(scheduleEvent);
+                _context.SaveChanges();
+            }catch(Exception e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = "Insert Failed!"
+                });
+            }
+            return StatusCode((int)HttpStatusCode.OK, new
+            {
+                message = "Insert Success!"
+            });
+        }
+
+        [HttpPut]
+        [Route("ScheduleEvent/Update")]
+        public ActionResult<string> ScheduleEvent_Update(ScheduleEvent scheduleEvent)
+        {
+            
+            try
+            {
+                var target = _context.ScheduleEvent.Where(item => item.id==scheduleEvent.id).FirstOrDefault();
+                if (target != null)
+                {
+                    target.title= scheduleEvent.title;
+                    target.start= scheduleEvent.start;
+                    target.end= scheduleEvent.end;
+                    target.fullDay= scheduleEvent.fullDay;
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return StatusCode((int)HttpStatusCode.NotFound, new
+                    {
+                        message = "Can't find anything to update!"
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = "Update Failed!"
+                });
+            }
+            //return response;
+            return StatusCode((int)HttpStatusCode.OK, new
+            {
+                message = "Update Ok"
+            });
+        }
+
+        [HttpDelete]
+        [Route("ScheduleEvent/Delete/{id}")]
+        public ActionResult<string> ScheduleEvent_Delete(string id)
+        {
+            try
+            {
+                var target = _context.ScheduleEvent.Where(item=>item.id.ToString().Equals(id) ).FirstOrDefault();
+                if (target != null)
+                {
+                _context.ScheduleEvent.Remove(target);
+                _context.SaveChanges();
+                }
+                else
+                {
+                    return StatusCode((int)HttpStatusCode.NotFound, new
+                    {
+                        message = "Can't find anything to delete!"
+                    });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = "Delete Failed!"
+                });
+            }
+            return StatusCode((int)HttpStatusCode.OK, new
+            {
+                message = "Delete Success!"
+            });
+        }
+
+        /*
         [HttpGet]
         [Route("Form/SelectAll")]
         public List<Form> Select_Form_All()
@@ -222,7 +340,7 @@ namespace fcapi.Controllers
             var obj = _context.ActingEmployeeMap.Where(x => x.id == id).FirstOrDefault();
             _context.ActingEmployeeMap.Remove(obj);
             _context.SaveChanges();
-        }
+        }*/
         /*
         // GET: MainController/Details/5
         public ActionResult Details(int id)
