@@ -17,6 +17,7 @@ namespace fcapi
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -34,7 +35,17 @@ namespace fcapi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "fcapi", Version = "v1" });
             });
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer());
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:5050");
+                    });
+            });
         }
+        
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +61,7 @@ namespace fcapi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

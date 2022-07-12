@@ -1,10 +1,11 @@
 ﻿using fcapi.DTO;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 
 namespace fcapi.Controllers
 {
@@ -20,24 +21,33 @@ namespace fcapi.Controllers
         }
 
         [HttpGet]
+        [EnableCors()]
         [Route("ScheduleEvent/Get/{userID}")]
-        public List<DTO_ScheduleEvent> ScheduleEvent_GetByUserID(string userID)
+        public string ScheduleEvent_GetByUserID(string userID)
         {
             List<DTO_ScheduleEvent> dto_scheduleEvents = new List<DTO_ScheduleEvent>();
 
             var obj = _context.ScheduleEvent.Where(item => item.UserId.ToString().Equals(userID)).ToList();
             obj.ForEach(item =>
             {
+                var start = item.start.ToString().Split(" ")[0].Split("/");
+                var end = item.end.ToString().Split(" ")[0].Split("/");
+
+                var start_month = start[1].Length==1? "0"+start[1]:start[1] ;
+                var end_month = end[1].Length == 1 ? "0" + end[1] : end[1];
+
                 dto_scheduleEvents.Add(new DTO_ScheduleEvent
                 {
                     id = item.id,
                     title = item.title,
-                    start = item.start.ToString().Split(" ")[0],
-                    end = item.end.ToString().Split(" ")[0],
+                    start =String.Format("{0}-{1}-{2}",start[0],start_month,start[2]),
+                    end = String.Format("{0}-{1}-{2}", end[0], end_month, end[2]),
                     fullDay = item.fullDay,
                 });
             });
-            return dto_scheduleEvents;
+            var json = JsonConvert.SerializeObject(dto_scheduleEvents);
+
+            return json;
         }
 
         [HttpPost]
