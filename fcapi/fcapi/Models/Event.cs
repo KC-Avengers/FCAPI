@@ -15,6 +15,6 @@ namespace fcapi.Models
         public DateTime? ReviewStartDate { get; set; }
         public DateTime? ReviewEndDate { get; set; }
         public bool? IsDelete { get; set; }
-        public int? EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
     }
 }

@@ -13,5 +13,6 @@ namespace fcapi.Models
         public string DeptId { get; set; }
         public string AreaId { get; set; }
         public string LoginMachine { get; set; }
+        public bool? ActingIsOpen { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace fcapi.Models
         }
 
         public virtual DbSet<AccessPermissionSetting> AccessPermissionSettings { get; set; }
+        public virtual DbSet<ActingMap> ActingMaps { get; set; }
         public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<ComBatchAmount> ComBatchAmounts { get; set; }
         public virtual DbSet<CostBonu> CostBonus { get; set; }
@@ -106,6 +107,23 @@ namespace fcapi.Models
                 entity.Property(e => e.Sid).HasColumnName("SID");
 
                 entity.Property(e => e.OfficialDocumentId).HasColumnName("OfficialDocumentID");
+            });
+
+            modelBuilder.Entity<ActingMap>(entity =>
+            {
+                entity.ToTable("ActingMap");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Createtime).HasColumnType("datetime");
+
+                entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
+
+                entity.Property(e => e.EmployeeactingId).HasColumnName("EmployeeactingID");
+
+                entity.Property(e => e.Endtime).HasColumnType("datetime");
+
+                entity.Property(e => e.Starttime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Area>(entity =>
@@ -569,15 +587,21 @@ namespace fcapi.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Absence).HasColumnName("absence");
+
                 entity.Property(e => e.Createtime).HasColumnType("datetime");
 
                 entity.Property(e => e.EventId).HasColumnName("EventID");
 
+                entity.Property(e => e.Late).HasColumnName("late");
+
+                entity.Property(e => e.Sick).HasColumnName("sick");
+
+                entity.Property(e => e.Special).HasColumnName("special");
+
                 entity.Property(e => e.Topic).HasColumnName("topic");
 
                 entity.Property(e => e.Type).HasColumnName("type");
-
-                entity.Property(e => e.TypeId).HasColumnName("typeID");
             });
 
             modelBuilder.Entity<FinalApprovalInfo>(entity =>
