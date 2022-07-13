@@ -23,7 +23,7 @@ namespace fcapi.Controllers
         [HttpGet]
         [EnableCors()]
         [Route("ScheduleEvent/Get/{userID}")]
-        public string ScheduleEvent_GetByUserID(string userID)
+        public IActionResult ScheduleEvent_GetByUserID(string userID)
         {
             List<DTO_ScheduleEvent> dto_scheduleEvents = new List<DTO_ScheduleEvent>();
 
@@ -45,12 +45,14 @@ namespace fcapi.Controllers
                     fullDay = item.fullDay,
                 });
             });
-            var json = JsonConvert.SerializeObject(dto_scheduleEvents);
+            //var json = JsonConvert.SerializeObject(dto_scheduleEvents);
 
-            return json;
+            //return json;
+            return Ok(dto_scheduleEvents);
         }
 
         [HttpPost]
+        [EnableCors()]
         [Route("ScheduleEvent/Insert")]
         public ActionResult<string> ScheduleEvent_Insert(ScheduleEvent scheduleEvent)
         {
@@ -73,6 +75,7 @@ namespace fcapi.Controllers
         }
 
         [HttpPut]
+        [EnableCors()]
         [Route("ScheduleEvent/Update")]
         public ActionResult<string> ScheduleEvent_Update(ScheduleEvent scheduleEvent)
         {
@@ -111,6 +114,7 @@ namespace fcapi.Controllers
         }
 
         [HttpDelete]
+        [EnableCors()]
         [Route("ScheduleEvent/Delete/{id}")]
         public ActionResult<string> ScheduleEvent_Delete(string id)
         {
@@ -143,6 +147,31 @@ namespace fcapi.Controllers
                 message = "Delete Success!"
             });
         }
+
+        [HttpPost]
+        [EnableCors()]
+        [Route("Signature_Insert")]
+        public ActionResult<string> Signature_Insert(SignatureInfo signatureInfo)
+        {
+
+            try
+            {
+                _context.SignatureInfo.Add(signatureInfo);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = "Insert Failed!"
+                });
+            }
+            return StatusCode((int)HttpStatusCode.OK, new
+            {
+                message = "Insert Success!"
+            });
+        }
+
 
         /*
         [HttpGet]
