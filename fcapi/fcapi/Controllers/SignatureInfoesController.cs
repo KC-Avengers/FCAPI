@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Cors;
 using fcapi.DTO;
 using System.IO;
 using System.Drawing;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Dynamic;
 
 namespace fcapi.Controllers
 {
@@ -56,13 +59,31 @@ namespace fcapi.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [EnableCors()]
-        [Route("test")]
-        public string justtest()
-        {
-            return "sss";
-        }
+        //[HttpGet]
+        //[EnableCors()]
+        //[Route("changeAPI")]
+        //public string changeAPI()
+        //{
+
+        //    var appSettingsPath = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "appsettings.json");
+        //    var json = System.IO.File.ReadAllText(appSettingsPath);
+        //    var jsonSettings = new JsonSerializerSettings();
+        //    jsonSettings.Converters.Add(new ExpandoObjectConverter());
+        //    jsonSettings.Converters.Add(new StringEnumConverter());
+        //    dynamic config = JsonConvert.DeserializeObject<ExpandoObject>(json, jsonSettings);
+
+        //    var connstr1 = "Server=.;Database=FcMRPComp01;Trusted_Connection=True;MultipleActiveResultSets=true";
+        //    var connstr2 = "Server=.;Database=FcMRPComp02;Trusted_Connection=True;MultipleActiveResultSets=true";
+        //    config.ConnectionStrings.HomeMoney =connstr2;
+        //    //"Server=.;Database=FcMRPComp01;Trusted_Connection=True;MultipleActiveResultSets=true"
+        //    //"Server=.;Database=FcMRPComp02;Trusted_Connection=True;MultipleActiveResultSets=true"
+
+
+
+        //    var newJson = JsonConvert.SerializeObject(config, Formatting.Indented, jsonSettings);
+        //    System.IO.File.WriteAllText(appSettingsPath, newJson);
+        //    return "FINISH";
+        //}
 
 
 
