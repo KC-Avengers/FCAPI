@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.IO;
+using Microsoft.Net.Http.Headers;
 
 namespace fcapi
 {
@@ -51,7 +52,7 @@ namespace fcapi
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:5050");
+                        policy.WithOrigins("http://localhost:5050").AllowAnyHeader().AllowAnyMethod();
                     });
             });
         }
