@@ -32,13 +32,13 @@ namespace fcapi.Controllers
                
 
                 var data = from i in _fcMRPComp01Context.Events
-                           
                            join c in _fcMRPComp01Context.Employees on i.EmployeeId equals c.EmployeeId
                            join d in _fcMRPComp01Context.Departments on c.DeptId equals d.DeptId
                            where i.IsDelete == false 
 
                            select new reviewFormDto
                            {
+                               ID =i.Id,
                                arrivalDate = i.StartTime,
                                createdDate = i.CreateTime,
                                department = new department
@@ -52,7 +52,7 @@ namespace fcapi.Controllers
                                    number = c.EmployeeId
                                },
                                eventItems = (from b in _fcMRPComp01Context.EventItems
-                                             where b.EventId == i.Id
+                                             where b.EventId == i.Id && b.IsDelete==false
                                              select new eventItem
                                              {
                                                  topic = b.Topic,
@@ -144,19 +144,138 @@ namespace fcapi.Controllers
                 };
                 _fcMRPComp01Context.Add(newevent);
                 _fcMRPComp01Context.SaveChanges();
-                foreach(var item in reviewFormDto.eventItems)
+                foreach (var item in reviewFormDto.eventItems)
                 {
                     var neweventitem = new EventItem
                     {
-                        EventId =reviewFormDto.eventId,
-                        Sort =item.sort,
-
+                        EventId = reviewFormDto.eventId,
+                        Sort = item.sort,
+                        CeoScore = item.scores.ceoScore,
+                        SelfScore = item.scores.selfScore,
+                        SupervisorScore = item.scores.supervisorScore,
+                        Topic = item.topic,
+                        Type = item.type,
+                        IsDelete = false,
+                        Createtime = DateTime.Now,
+                        Isattendance = item.isattendance,
+                        Absence = item.attendance.absence,
+                        Late = item.attendance.late,
+                        Sick = item.attendance.sick,
+                        Special = item.attendance.special
                     };
+                    _fcMRPComp01Context.Add(neweventitem);
                 }
-                
-
+                _fcMRPComp01Context.SaveChanges();
                 result.issucess = true;
                 result.response = "新增成功";
+                result.Data = null;
+
+
+            }
+            catch (Exception ex)
+            {
+                result.issucess = false;
+                result.response = ex.Message;
+                result.Data = null;
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 修改Event
+        /// </summary>
+        [HttpPost("AlternetEvent")]
+        public IActionResult AlternetEvent(reviewFormDto reviewFormDto)
+        {
+            var result = new Result();
+            try
+            {
+                var oldevent = from i in _fcMRPComp01Context.Events
+                               where i.Id == reviewFormDto.ID
+                               select i;
+                foreach(var item in oldevent.ToList())
+                {
+                    item.StartTime = reviewFormDto.createdDate;
+                    item.EndTime = reviewFormDto.arrivalDate;
+                    item.EventName = reviewFormDto.eventName;
+                    item.ReviewStartDate = reviewFormDto.reviewDateRange.starttime;
+                    item.ReviewEndDate = reviewFormDto.reviewDateRange.endtime;
+                    item.EmployeeId = reviewFormDto.employee.number;
+                    _fcMRPComp01Context.SaveChanges();
+                }
+                foreach (var item in reviewFormDto.eventItems)
+                {
+                    var oldeventitem = from i in _fcMRPComp01Context.EventItems
+                                       where i.Id == item.ID
+                                       select i;
+                    foreach(var items in oldeventitem.ToList())
+                    {
+
+                        items.Sort = item.sort;
+                         items.CeoScore = item.scores.ceoScore;
+                        items.SelfScore = item.scores.selfScore;
+                        items.SupervisorScore = item.scores.supervisorScore;
+                        items.Topic = item.topic;
+                        items.Type = item.type;
+                        items.Isattendance = item.isattendance;
+                        items.Absence = item.attendance.absence;
+                        items.Late = item.attendance.late;
+                        items.Sick = item.attendance.sick;
+                        items.Special = item.attendance.special;
+                        _fcMRPComp01Context.SaveChanges();
+                    }
+                    _fcMRPComp01Context.SaveChanges();
+                }
+                _fcMRPComp01Context.SaveChanges();
+                result.issucess = true;
+                result.response = "修改成功";
+                result.Data = null;
+
+
+            }
+            catch (Exception ex)
+            {
+                result.issucess = false;
+                result.response = ex.Message;
+                result.Data = null;
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 刪除Event
+        /// </summary>
+        [HttpPost("deleteEvent")]
+        public IActionResult deleteEvent(reviewFormDto reviewFormDto)
+        {
+            var result = new Result();
+            try
+            {
+                var oldevent = from i in _fcMRPComp01Context.Events
+                               where i.Id == reviewFormDto.ID
+                               select i;
+                foreach (var item in oldevent.ToList())
+                {
+                    item.IsDelete = true;
+                    _fcMRPComp01Context.SaveChanges();
+                }
+                foreach (var item in reviewFormDto.eventItems)
+                {
+                    var oldeventitem = from i in _fcMRPComp01Context.EventItems
+                                       where i.Id == item.ID
+                                       select i;
+                    foreach (var items in oldeventitem.ToList())
+                    {
+
+                        items.IsDelete = true;
+
+                        _fcMRPComp01Context.SaveChanges();
+                    }
+                    _fcMRPComp01Context.SaveChanges();
+                }
+                _fcMRPComp01Context.SaveChanges();
+                result.issucess = true;
+                result.response = "修改成功";
                 result.Data = null;
 
 

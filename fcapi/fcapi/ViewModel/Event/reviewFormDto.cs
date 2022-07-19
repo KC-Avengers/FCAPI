@@ -7,6 +7,7 @@ namespace fcapi.ViewModel.Event
 {
     public class reviewFormDto
     {
+        public int ID { get; set; }
         public DateTime? arrivalDate { get; set; }
         public DateTime? createdDate { get; set; }
 
@@ -33,6 +34,7 @@ namespace fcapi.ViewModel.Event
     }
     public class eventItem
     {
+        public int ID { get; set; }
         public string? topic { get; set; }
         public int? sort { get; set; }
 
