@@ -33,7 +33,7 @@ namespace fcapi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<FcMRPComp01Context>(options =>
-       options.UseSqlServer(Configuration.GetConnectionString("HomeMoney")));
+            options.UseSqlServer(Configuration.GetConnectionString("HomeMoney")));
             services.AddScoped<FcMRPComp01Context>();
             services.AddControllers();
 
@@ -56,7 +56,7 @@ namespace fcapi
                     });
             });
         }
-        
+
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +70,9 @@ namespace fcapi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
